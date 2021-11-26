@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Prueba de Ingreso</string>
+    <string name="userName">Nombre</string>
+    <string name="userPhone">Telefono</string>
+    <string name="userMail">Correo</string>
+    <string name="viewPublications">VER PUBLICACIONES</string>
+    <string name="titlePublish">Lista de Publicaciones</string>
+    <string name="listEmpty">List is empty</string>
+
+</resources>
