@@ -1,4 +1,4 @@
-package com.example.pruebaa.Model
+package com.example.pruebaa.ui.Model
 
 data class PostsData(
 

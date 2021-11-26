@@ -13,9 +13,11 @@
         android:theme="@style/Theme.PruebaA">
         <activity
             android:name=".ui.Post.Activity_post"
+            android:parentActivityName=".ui.Users.MainActivity"
             android:exported="false" />
         <activity
             android:name=".ui.Users.MainActivity"
+
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -4,9 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.pruebaa.Adapter.PostsAdapter
-import com.example.pruebaa.Model.PostsData
-import com.example.pruebaa.Repository.APIService
+import com.example.pruebaa.ui.Adapter.PostsAdapter
+import com.example.pruebaa.ui.Model.PostsData
+import com.example.pruebaa.data.APIService
 import com.example.pruebaa.RestClient.Retrofit
 import com.example.pruebaa.databinding.ActivityPostBinding
 import org.jetbrains.anko.doAsync
@@ -26,6 +26,10 @@ class Activity_post : AppCompatActivity() {
         //implementacion del binding
         binding = ActivityPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
+supportActionBar!!.title="Prueba de ingreso"
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+
 
         getDataActivity()
     }

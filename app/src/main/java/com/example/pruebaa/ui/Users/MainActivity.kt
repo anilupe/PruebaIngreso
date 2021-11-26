@@ -4,22 +4,24 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.View
 import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.pruebaa.Adapter.UsersAdapter
-import com.example.pruebaa.Model.User
+import com.example.pruebaa.ui.Adapter.UsersAdapter
+import com.example.pruebaa.ui.Model.User
+import com.example.pruebaa.data.Prefs
 import com.example.pruebaa.R
-import com.example.pruebaa.Repository.APIService
 import com.example.pruebaa.RestClient.Retrofit
 import com.example.pruebaa.databinding.ActivityMainBinding
+import com.example.pruebaa.viewModel.usersViewModel
 import org.jetbrains.anko.alert
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import java.util.*
 import kotlin.collections.ArrayList
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import androidx.activity.*
+import androidx.lifecycle.Observer
+
 
 class MainActivity : AppCompatActivity(),
     androidx.appcompat.widget.SearchView.OnQueryTextListener {
@@ -27,68 +29,66 @@ class MainActivity : AppCompatActivity(),
     //instanciar la clase retrofit donde se encuentra el cliente de servidores Rest
     val retrofit = Retrofit()
 
-
+    var gson = Gson()
     private lateinit var adapter: UsersAdapter
     private lateinit var itemList:List<User>
     var allDataList:MutableList<User> = ArrayList()
-
     //forma actual de acceder a las vistas desde las clases
     private lateinit var binding: ActivityMainBinding
 
+    private val viewModelL:usersViewModel by viewModels()
+
+    companion object {
+        lateinit var prefs: Prefs
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        prefs= Prefs(applicationContext)
        //implementacion del binding
-       binding= ActivityMainBinding.inflate(layoutInflater)
-       setContentView(binding.root)
+        binding= ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+        binding.svUsers.setOnQueryTextListener(this)
+        checkUsersData()
         //Dialogo de carga
         val progressDialog = ProgressDialog(this@MainActivity)
         progressDialog.setMessage("Por favor espere...")
-
-        getUsers(progressDialog)
-        binding.svUsers.setOnQueryTextListener(this)
-    }
-    private fun getUsers(progressDialog:ProgressDialog){
-        progressDialog.show()
-
-        doAsync {
-        //variable que sera encargada de llamar al metodo qe nos devuelve RETROFIT
-             val call = retrofit.getRetrofit().create(APIService::class.java).getUsers("users").execute()
-            uiThread{
-                if( call.code()==200) {
-                    //si la respuesta es correcta
-                    showData(call.body()!!)
-                    itemList = call.body()!!
-                    System.out.println("DETALLE DE DATOS"+itemList)
-
-                    progressDialog.dismiss()
-                }else{
-                    progressDialog.dismiss()
-                    showErrorDialog()
-                }
-                hideKeyboard()
+        viewModelL.listUsers.observe(this, Observer{
+            binding.rvUsers.apply{
+                layoutManager=LinearLayoutManager(this@MainActivity)
+                allDataList.addAll(it)
+                itemList = it
+                adapter =
+                    UsersAdapter(
+                        allDataList
+                    )
             }
+            progressDialog.dismiss()
+        })
+    }
+
+    //verificamos si hay datos en local
+    fun checkUsersData(){
+        if (prefs.getUsers().isNotEmpty()){
+            //convertimos de String a JSON data
+            val listUserType = object : TypeToken<List<User>>() {}.type
+            var localUsers: List<User> = gson.fromJson(prefs.getUsers(), listUserType)
+             viewModelL.listUsers.postValue(localUsers)
+        }
+        else{
+            //Dialogo de carga
+            val progressDialog = ProgressDialog(this@MainActivity)
+            progressDialog.setMessage("Por favor espere...")
+            viewModelL.getUsers(progressDialog)
+            if (viewModelL.errorMessage.equals("Error")){
+                showErrorDialog()
+            }
+
         }
     }
 
-    private fun showErrorDialog() {
-        alert("Ha ocurrido un error, inténtelo de nuevo.") {
-            yesButton { }
-        }.show()
-
-    }
-
-    //llamar al adaptador para llenar los datos en el recyclerView
-    private fun showData(user:List<User>){
-        binding.rvUsers.apply{
-            layoutManager=LinearLayoutManager(this@MainActivity)
-            allDataList.addAll(user)
-            adapter =
-                UsersAdapter(
-                    allDataList
-                )
-        }
-    }
 
     override fun onQueryTextSubmit(newText: String?): Boolean {
         filterList(newText.toString())
@@ -137,10 +137,21 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-
     //ocultar teclado luego de busqueda
     private fun hideKeyboard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.viewRoot.windowToken, 0)
     }
+
+    //mostrar mensaje de error si hay en la consulta
+    private fun showErrorDialog() {
+        alert("Ha ocurrido un error, inténtelo de nuevo.") {
+            yesButton { }
+        }.show()
+
+    }
+
+
+
+
 }

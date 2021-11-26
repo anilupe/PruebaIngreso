@@ -53,9 +53,11 @@
         android:text="@string/viewPublications"
         android:textColor="@color/blue"
         android:textStyle="bold"
-        android:textSize="15dp"
+        android:textSize="18sp"
+        android:shadowColor="@color/blue"
         android:layout_gravity="end"
         android:layout_marginEnd="10dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginTop="100dp"/>
 
 

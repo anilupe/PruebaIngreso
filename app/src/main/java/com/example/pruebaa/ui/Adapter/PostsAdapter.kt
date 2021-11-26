@@ -1,15 +1,12 @@
-package com.example.pruebaa.Adapter
+package com.example.pruebaa.ui.Adapter
 
-import android.app.Activity
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pruebaa.Model.PostsData
+import com.example.pruebaa.ui.Model.PostsData
 import com.example.pruebaa.R
-import com.example.pruebaa.ui.Post.Activity_post
 
 class PostsAdapter(private var posts: List<PostsData>) : RecyclerView.Adapter<PostsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
