@@ -9,6 +9,7 @@ import com.example.pruebaa.ui.Model.PostsData
 import com.example.pruebaa.data.APIService
 import com.example.pruebaa.RestClient.Retrofit
 import com.example.pruebaa.databinding.ActivityPostBinding
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -26,10 +27,8 @@ class Activity_post : AppCompatActivity() {
         //implementacion del binding
         binding = ActivityPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
-supportActionBar!!.title="Prueba de ingreso"
+        supportActionBar!!.title="Prueba de ingreso"
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-
 
         getDataActivity()
     }
@@ -62,7 +61,7 @@ supportActionBar!!.title="Prueba de ingreso"
                     //si la respuesta es correcta
 
                 } else {
-
+                    showErrorDialog()
                 }
 
             }
@@ -78,5 +77,13 @@ supportActionBar!!.title="Prueba de ingreso"
                     post
                 )
         }
+    }
+
+    //mostrar mensaje de error si hay en la consulta
+    private fun showErrorDialog() {
+        alert("Ha ocurrido un error, inténtelo de nuevo.") {
+            yesButton { }
+        }.show()
+
     }
 }

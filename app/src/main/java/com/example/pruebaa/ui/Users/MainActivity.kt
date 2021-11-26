@@ -6,10 +6,8 @@ import android.view.View
 import android.view.View.INVISIBLE
 import androidx.activity.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pruebaa.R
-import com.example.pruebaa.RestClient.Retrofit
 import com.example.pruebaa.data.Prefs
 import com.example.pruebaa.databinding.ActivityMainBinding
 import com.example.pruebaa.ui.Adapter.UsersAdapter
@@ -24,9 +22,6 @@ import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(),
     androidx.appcompat.widget.SearchView.OnQueryTextListener {
-
-    //instanciar la clase retrofit donde se encuentra el cliente de servidores Rest
-    val retrofit = Retrofit()
 
     var gson = Gson()
     private lateinit var adapter: UsersAdapter
@@ -90,12 +85,13 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-
+    //cuando el usuario de click
     override fun onQueryTextSubmit(newText: String?): Boolean {
         filterList(newText.toString())
         return true
     }
 
+    //cuando el texto vaya cambiando
     override fun onQueryTextChange(newText: String?): Boolean {
         filterList(newText.toString())
         return true
