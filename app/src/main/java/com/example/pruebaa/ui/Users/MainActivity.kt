@@ -4,23 +4,22 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.View
 import android.view.View.INVISIBLE
-import android.view.inputmethod.InputMethodManager
+import androidx.activity.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.pruebaa.ui.Adapter.UsersAdapter
-import com.example.pruebaa.ui.Model.User
-import com.example.pruebaa.data.Prefs
 import com.example.pruebaa.R
 import com.example.pruebaa.RestClient.Retrofit
+import com.example.pruebaa.data.Prefs
 import com.example.pruebaa.databinding.ActivityMainBinding
+import com.example.pruebaa.ui.Adapter.UsersAdapter
+import com.example.pruebaa.ui.Model.User
 import com.example.pruebaa.viewModel.usersViewModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.jetbrains.anko.alert
 import java.util.*
 import kotlin.collections.ArrayList
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import androidx.activity.*
-import androidx.lifecycle.Observer
 
 
 class MainActivity : AppCompatActivity(),
@@ -38,6 +37,7 @@ class MainActivity : AppCompatActivity(),
 
     private val viewModelL:usersViewModel by viewModels()
 
+
     companion object {
         lateinit var prefs: Prefs
     }
@@ -48,14 +48,15 @@ class MainActivity : AppCompatActivity(),
         prefs= Prefs(applicationContext)
        //implementacion del binding
         binding= ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
+
+        setContentView(binding.root)
         binding.svUsers.setOnQueryTextListener(this)
         checkUsersData()
         //Dialogo de carga
         val progressDialog = ProgressDialog(this@MainActivity)
         progressDialog.setMessage("Por favor espere...")
-        viewModelL.listUsers.observe(this, Observer{
+        viewModelL.listUsers.observe(this, {
             binding.rvUsers.apply{
                 layoutManager=LinearLayoutManager(this@MainActivity)
                 allDataList.addAll(it)
@@ -101,13 +102,13 @@ class MainActivity : AppCompatActivity(),
 
     }
 
-    private fun filterList(filterUser: String) {
+    fun filterList(filterUser: String) {
         if (filterUser.isNotEmpty()){
             allDataList.clear()
             for (d in itemList){
                 if (filterUser in d.name){
                         allDataList.add(d)
-                    binding.tvListEmpty.setVisibility(View.INVISIBLE)
+                    binding.tvListEmpty.visibility = INVISIBLE
                 }
             }
             if (allDataList.size==0){
@@ -122,7 +123,7 @@ class MainActivity : AppCompatActivity(),
                     UsersAdapter(
                         allDataList
                     )
-                binding.tvListEmpty.setVisibility(View.INVISIBLE)
+                binding.tvListEmpty.visibility = INVISIBLE
             }
 
             binding.rvUsers.adapter!!.notifyDataSetChanged()
@@ -136,13 +137,6 @@ class MainActivity : AppCompatActivity(),
         }
 
     }
-
-    //ocultar teclado luego de busqueda
-    private fun hideKeyboard() {
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(binding.viewRoot.windowToken, 0)
-    }
-
     //mostrar mensaje de error si hay en la consulta
     private fun showErrorDialog() {
         alert("Ha ocurrido un error, inténtelo de nuevo.") {
@@ -150,8 +144,4 @@ class MainActivity : AppCompatActivity(),
         }.show()
 
     }
-
-
-
-
 }

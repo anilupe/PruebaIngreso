@@ -36,15 +36,11 @@ supportActionBar!!.title="Prueba de ingreso"
 
     private fun getDataActivity() {
         val objetIntent: Intent = intent
-        var idUser: Int = 0
-        var nameUser: String?
-        var phoneUser: String?
-        var emailUser: String?
 
-        idUser = objetIntent.getIntExtra("idUser", 0)
-        nameUser = objetIntent.getStringExtra("nameUser")
-        phoneUser = objetIntent.getStringExtra("phoneUser")
-        emailUser = objetIntent.getStringExtra("emailUser")
+        var idUser: Int = objetIntent.getIntExtra("idUser", 0)
+        var nameUser: String? = objetIntent.getStringExtra("nameUser")
+        var phoneUser: String? = objetIntent.getStringExtra("phoneUser")
+        var emailUser: String? = objetIntent.getStringExtra("emailUser")
         binding.tvName.setText(nameUser)
         binding.tvPhone.setText(phoneUser)
         binding.tvMail.setText(emailUser)

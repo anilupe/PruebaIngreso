@@ -2,7 +2,7 @@ package com.example.pruebaa.data
 
 import android.content.Context
 
-class Prefs (val  context: Context){
+class Prefs (context: Context){
 
     val SHARED_NAME="UsersSh"
     val SHARED_USER_DATA="userData"

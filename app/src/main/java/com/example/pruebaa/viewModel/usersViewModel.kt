@@ -43,8 +43,4 @@ class usersViewModel:ViewModel() {
         MainActivity.prefs.saveUsers(jsontut)
     }
 
-
-
-
-
 }
